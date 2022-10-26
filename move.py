@@ -22,25 +22,27 @@ Handle = []
 for directory in Path(ParseDirectory).glob('*'):
     # Validate
     if directory.is_dir():
-        Handle.append(directory.name) # Figure out which ones we will need to delete and copy
+        remote = Path(LocalDirectory + "/" + directory.name)
+
+        if remote.exists() and remote.is_dir():
+            Handle.append(directory.name) # Figure out which ones we will need to delete and copy
 
 # Log
-Message = "Directories for copying: %d" % len(Handle)
-
-print(Message)
+print("Directories for copying: %d" % len(Handle))
 
 # Actions
 for folder in Handle:
     # Directories
     directory = Path(LocalDirectory + "/" + folder)
     remote = Path(ParseDirectory + "/" + folder)
+    
+    # Message
+    print(directory.name)
 
     # Delete
     if directory.exists():
         # Log
-        Message = "Deleting directory %s" % directory.name
-
-        print(Message)
+        print("/ Deleting")
 
         # Remove
         shutil.rmtree(directory)        
@@ -49,6 +51,4 @@ for folder in Handle:
     shutil.copytree(remote, directory)
 
     # Log
-    Message = "Remote %s -> Local" % directory.name
-
-    print(Message)
+    print("/ Moving")
